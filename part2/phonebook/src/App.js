@@ -1,29 +1,43 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import contactsService from './services/contacts'
+
+//Import Components
 import NewName from './components/NewName'
 import DisplayContacts from './components/DisplayContacts'
 import Search from './components/Search'
+import Message from './components/Message'
 
 const App = () => {
     
     //STATE:
-    const [ persons, setPersons] = useState([
-      { name: 'Arto Hellas',number: '040-1234567'},
-      { name: 'Ada Lovelace', number: '39-44-5323523' },
-      { name: 'Dan Abramov', number: '12-43-234345' },
-      { name: 'Mary Poppendieck', number: '39-23-6423122'}
-    ]) 
+    const [ persons, setPersons] = useState([]) 
     const [ newName, setNewName ] = useState('')
-    const [ newNumber, setNewNumber] = useState('')
-    const [ newSearch, setNewSearch] = useState('')
+    const [ newNumber, setNewNumber ] = useState('')
+    const [ newSearch, setNewSearch ] = useState('')
+    const [ message, setMessage] = useState({
+      mes : '',
+      err : ''
+    })
     //END of STATE
     
+    //EFFECT HOOK:
+    useEffect(() => {
+      contactsService
+        .getAll()
+        .then(contacts => setPersons(contacts))
+    }
+    ,[])
+    //END of EFFECTS
+
     return (
       <div>
         <h2>Phonebook</h2>
 
+        <Message message = {message}/>
+
         <Search 
-          newSearch={newSearch} 
-          setNewSearch={setNewSearch}
+          newSearch = {newSearch} 
+          setNewSearch = {setNewSearch}
         />
         
         <NewName 
@@ -33,11 +47,14 @@ const App = () => {
           setNewName = {setNewName}
           newNumber = {newNumber}
           setNewNumber = {setNewNumber}
+          setMessage = {setMessage}
         /> 
         
         <DisplayContacts 
-          persons= {persons}
-          newSearch= {newSearch}
+          persons = {persons}
+          setPersons = {setPersons}
+          newSearch = {newSearch}
+          setMessage = {setMessage}
         />
       </div>
     )
