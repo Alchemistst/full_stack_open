@@ -1,129 +1,180 @@
-const express = require("express")
-const app = express()
-const ids = require("shortid") //Instead of using Math random I decided to use short id for ids. Much better.
-const bodyParser = require("body-parser")
-const dexter = require("morgan")
-const cors = require("cors")
+require('dotenv').config();
+const express = require('express');
 
-app.use(cors())
-app.use(express.static("build"))
-app.use(dexter(function (tokens, req, res) {
-    
-    const post = JSON.stringify(res.req.body) 
-    const avoidAnnoyingBrackets = post != "{}" ? post : ""
-    
-    return [
-      tokens.method(req, res),
-      tokens.url(req, res),
-      tokens.status(req, res),
-      tokens.res(req, res, 'content-length'), '-',
-      tokens['response-time'](req, res), 'ms',
-      avoidAnnoyingBrackets
-    ].join(' ')
-  }))
-
-app.use(bodyParser.json())
-
-let persons = [
-    {
-        name: "Arto Hellas",
-        number: "040-123456",
-        id: ids.generate()
-      },
-      {
-        name: "Ada Lovelace",
-        number: "39-44-5323523",
-        id: ids.generate()
-      },
-      {
-        name: "Dan Abramov",
-        number: "12-43-234345",
-        id: ids.generate()
-      },
-      {
-        name: "Mary Poppendieck",
-        number: "39-23-6423122",
-        id: ids.generate()
-      }
-]
+const app = express();
+const bodyParser = require('body-parser');
+const dexter = require('morgan');
+const cors = require('cors');
+const Person = require('./models/person'); // Database model
 
 
+app.use(cors());
+app.use(express.static('build'));
 
-app.get("/", (req, res) =>{
-    res.send("<h1>Welcome to the PERSONS API!</h1>")
-})
+// Morgan setup for logging requests
+app.use(dexter((tokens, req, res) => {
+  const post = JSON.stringify(res.req.body);
+  const avoidAnnoyingBrackets = post !== '{}' ? post : '';
+
+  return [
+    tokens.method(req, res),
+    tokens.url(req, res),
+    tokens.status(req, res),
+    tokens.res(req, res, 'content-length'), '-',
+    tokens['response-time'](req, res), 'ms',
+    avoidAnnoyingBrackets,
+  ].join(' ');
+}));
+
+app.use(bodyParser.json());
+
+
+// Code for diferent URL paths
+
+app.get('/', (req, res) => {
+  res.send('<h1>Welcome to the PERSONS API!</h1>');
+});
 
 // /api/persons sends the array of all persons on the server
-app.get("/api/persons", (req,res) => {
-    res.json(persons)
-})
+app.get('/api/persons', (req, res, next) => {
+  Person
+    .find({})
+    .then((result) => res.json(result.map((person) => person.toJSON())))
+    .catch((err) => next(err));
+});
 
 // /info sends HTML page info about how many contacts at timestamp
-app.get("/info", (req, res) => {
-    let people = persons.length
-    let date = new Date()
-    let message = people === 1 
-    ?  `Phonebook has info for ${people} person`
-    : `Phonebook has info for ${people} people`
-    res.send(
+app.get('/info', (req, res, next) => {
+  Person.countDocuments({})
+    .then((count) => {
+      const date = new Date();
+      const message = count === 1
+        ? `Phonebook has info for ${count} person`
+        : `Phonebook has info for ${count} people`;
+      res.send(
         `
-        <p>${message}</p>
-        <p>${date}</p>
-        `
-    )
-})
+                <p>${message}</p>
+                <p>${date}</p>
+                `,
+      );
+    })
+    .catch((err) => next(err));
+});
 
 // /api/persons/:id handles the request for a specific person
-app.get("/api/persons/:id", (req, res) => {
-    const id = req.params.id
-    const person = persons.find(per => per.id === id)
-
-    if(person){
-        res.json(person)
-    }else{
-        res.status(404).end()
-    }
-})
+app.get('/api/persons/:id', (req, res, next) => {
+  Person
+    .findById(req.params.id)
+    .then((person) => {
+      if (person) {
+        res.json(person.toJSON());
+      } else {
+        next();
+      }
+    })
+    .catch((err) => next(err));
+});
 
 // Implementation of DELETE requests for a single person
-app.delete("/api/persons/:id", (req, res) => {
-    const id = req.params.id
-    persons = persons.filter(per => per.id !== id)
+app.delete('/api/persons/:id', (req, res, next) => {
+  const { id } = req.params;
 
-    res.status(204).end()
-})
+  Person
+    .findByIdAndRemove(id)
+    .then((result) => {
+      if (result) {
+        res.status(204).end();
+      } else {
+        next();
+      }
+    })
+    .catch((err) => next(err));
+});
 
-// Handling of POST requests for adding new persons
-app.post("/api/persons", (req, res) => {
-    const body = req.body
-    
-    // Error handling for missing information
-    if (!body.name || !body.number){
-        return res.status(400).json({
-            error: "Name or number missing."
-        })
+// Handling of POST requests to add new persons
+app.post('/api/persons', (req, res, next) => {
+  const { body } = req;
+
+  const person = new Person({
+    name: body.name,
+    number: body.number,
+  });
+
+  person.save()
+    .then((savedPerson) => {
+      res.json(savedPerson.toJSON());
+    }).catch((err) => next(err));
+
+  dexter.token('type', res.body);
+});
+
+// Handling PUT requests to update persons
+app.put('/api/persons/:id', (req, res, next) => {
+  const { body } = req;
+
+  const person = {
+    name: body.name,
+    number: body.number,
+  };
+
+  Person
+    .findByIdAndUpdate(req.params.id, person, { new: true, runValidators: true, context: 'query' })
+    .then((updatedPerson) => {
+      if (updatedPerson) {
+        res.json(updatedPerson.toJSON());
+      } else {
+        next();
+      }
+    })
+    .catch((err) => next(err));
+});
+
+
+// Middleware error handlers
+
+// -> Handler for requests with unknown endpoint
+const unknownEndpoint = (req, res) => {
+  res.status(404).send({ error: 'unknown endpoint' });
+};
+
+app.use(unknownEndpoint);
+
+// -> Handler for requests with result to errors
+const errorHandler = (err, req, res, next) => {
+  if (err.message) console.error(err.message);
+
+  if (err.name === 'CastError' && err.kind === 'ObjectId') {
+    // Notify of malformated ids
+    return res.status(400).send({ error: 'Malformatted id.' });
+  }
+  // Validation errors
+  if (err.name === 'ValidationError') {
+    // Name validation errors
+    if (err.errors.name) {
+      // Non-duplicates
+      if (err.errors.name.kind === 'unique') { return res.status(400).send({ error: 'Duplicate entry.' }); }
+      // Minlength requirements
+      if (err.errors.name.kind === 'minlength') { return res.status(400).send({ error: 'Name length is too short.' }); }
+      // Not missing information
+      if (err.errors.name.kind === 'required') { return res.status(400).send({ error: 'Missing name field.' }); }
     }
-
-    //Error handling for already existing entry
-    if (persons.find(per => per.name === body.name)){
-        return res.status(400).json({
-            error: "Name must be unique."
-        })
+    // Number validation errors
+    if (err.errors.number) {
+      // Minlength requirements
+      if (err.errors.number.kind === 'minlength') { return res.status(400).send({ error: 'Phone number legnth is too short.' }); }
+      // No letters
+      if (err.errors.number.properties.kind === 'nondigit') { return res.status(400).send({ error: 'Phone number contains forbiden characters.' }); }
+      // Not missing information
+      if (err.errors.number.kind === 'required') { return res.status(400).send({ error: 'Missing number field.' }); }
     }
+  }
 
-    const person = {
-        name: body.name,
-        number: body.number,
-        id: ids.generate()
-    }
+  return next(err);
+};
 
-    persons = persons.concat(person)
+app.use(errorHandler);
 
-    res.json(person)
 
-    dexter.token("type", (req, res) => res.body )
-})
+const PORT = process.env.PORT || 3001;
 
-const PORT = process.env.PORT || 3001
-
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

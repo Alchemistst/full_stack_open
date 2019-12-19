@@ -1,0 +1,27 @@
+put http://localhost:3001/api/persons/5df0b2d95b2af532583074ac
+Content-Type: application/json
+
+    {
+      "name": "",
+      "number": "77777777"
+    }
+
+###
+
+put http://localhost:3001/api/persons/5df0b2d95b2af532583074ac
+Content-Type: application/json
+
+    {
+      "name": "sss",
+      "number": ""
+    }
+
+###
+
+put http://localhost:3001/api/persons/5df0b2d95b2af532583074a0
+Content-Type: application/json
+
+    {
+      "name": "sss",
+      "number": "77777777"
+    }
