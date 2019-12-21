@@ -1,7 +1,66 @@
 post http://localhost:3001/api/persons
 Content-Type: application/json
 
-{
-    "name" : "Pady",
-    "number" : ""
-}
+    {
+      "name": "Arto Hellas",
+      "number": "040-123456"
+    }
+
+###
+
+post http://localhost:3001/api/persons
+Content-Type: application/json
+
+    {
+      "name": "Ada Lovelace",
+      "number": "39-44-5323523"
+    }
+
+###
+post http://localhost:3001/api/persons
+Content-Type: application/json
+
+    {
+      "name": "Dan Abramov",
+      "number": "12-43-234345"
+    }
+###
+post http://localhost:3001/api/persons
+Content-Type: application/json
+
+    {
+      "name": "Mary Poppendieck",
+      "number": "39-23-6423122"
+    }
+###
+post http://localhost:3001/api/persons
+Content-Type: application/json
+
+    {
+      "name": "Pady",
+      "number": "123"
+    }
+###
+post http://localhost:3001/api/persons
+Content-Type: application/json
+
+    {
+      "name": "Angus",
+      "number": "1111"
+    }
+###
+post http://localhost:3001/api/persons
+Content-Type: application/json
+
+    {
+      "name": "Perry",
+      "number": "234"
+    }
+###
+post http://localhost:3001/api/persons
+Content-Type: application/json
+
+    {
+      "name": "Lucas",
+      "number": "11"
+    }
