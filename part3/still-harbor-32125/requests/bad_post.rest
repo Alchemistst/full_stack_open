@@ -1,0 +1,39 @@
+post http://localhost:3001/api/persons
+Content-Type: application/json
+
+    {
+      "name": "",
+      "number": "77777777"
+    }
+
+###
+
+post http://localhost:3001/api/persons
+Content-Type: application/json
+
+    {
+      "name": "sss",
+      "number": ""
+    }
+
+###
+
+post http://localhost:3001/api/persons
+Content-Type: application/json
+
+    {
+      "name": "sss",
+      "number": "77777777a"
+    }
+
+###
+
+post http://localhost:3001/api/persons
+Content-Type: application/json
+
+    {
+      "name": "Pady",
+      "number": "7777777777"
+    }
+
+###
