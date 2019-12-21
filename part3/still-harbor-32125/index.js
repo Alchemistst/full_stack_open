@@ -67,7 +67,7 @@ app.get('/api/persons/:id', (req, res, next) => {
     .findById(req.params.id)
     .then((person) => {
       if (person) {
-        res.json(person.toJSON());
+        res.status(200).json(person.toJSON());
       } else {
         next();
       }
@@ -102,7 +102,7 @@ app.post('/api/persons', (req, res, next) => {
 
   person.save()
     .then((savedPerson) => {
-      res.json(savedPerson.toJSON());
+      res.status(201).json(savedPerson.toJSON());
     }).catch((err) => next(err));
 
   dexter.token('type', res.body);
@@ -121,7 +121,7 @@ app.put('/api/persons/:id', (req, res, next) => {
     .findByIdAndUpdate(req.params.id, person, { new: true, runValidators: true, context: 'query' })
     .then((updatedPerson) => {
       if (updatedPerson) {
-        res.json(updatedPerson.toJSON());
+        res.status(200).json(updatedPerson.toJSON());
       } else {
         next();
       }
