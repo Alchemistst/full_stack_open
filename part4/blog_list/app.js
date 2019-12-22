@@ -4,12 +4,13 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const morgan = require('morgan')
 const blogsRouter = require('./controllers/blogs')
+const middleware = require('./utils/middleware')
 
 //Middleware initialization
 app.use(cors())
 app.use(bodyParser.json())
 
-//Database initialization
+//Morgan inizialization
 app.use(morgan((tokens, req, res) => {
   const post = JSON.stringify(res.req.body)
   const avoidAnnoyingBrackets = post !== '{}' ? post : ''
@@ -26,5 +27,8 @@ app.use(morgan((tokens, req, res) => {
 
 //Routes are handled by blogsRouter object on /controlers/blogs.js
 app.use('/api/blogs', blogsRouter)
+
+app.use(middleware.unknownEndpoint)
+app.use(middleware.errorHandler)
 
 module.exports = app

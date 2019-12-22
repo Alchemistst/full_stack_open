@@ -9,7 +9,7 @@ blogsRouter.get('/', (req, res) => {
       })
   })
   
-blogsRouter.post('/', (req, res) => {
+blogsRouter.post('/', (req, res, next) => {
     const { body } = req
 
     const blog = new Blog({
@@ -23,7 +23,7 @@ blogsRouter.post('/', (req, res) => {
         .save()
         .then(result => {
         res.status(201).json(result)
-        })
+        }).catch((err) => next(err))
 })
 
 module.exports = blogsRouter

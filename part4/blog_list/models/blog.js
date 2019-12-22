@@ -2,11 +2,17 @@ const mongoose = require('mongoose')
 const config = require('../utils/config')
 
 //TODO: Add validation and catch errors on middleware.js
-
+//Schema definition and validation
 const blogSchema = mongoose.Schema({
-    title: String,
+    title: {
+      type: String,
+      required: true
+    },
     author: String,
-    url: String,
+    url: {
+      type: String,
+      required: true
+    },
     likes: Number
   })
   

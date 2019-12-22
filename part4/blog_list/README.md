@@ -1,1 +1,1 @@
-Run npm install before running npm start
+Run `npm install` before running `npm start`.
