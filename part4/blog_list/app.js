@@ -1,19 +1,20 @@
-const express = require('express')
-const app = express()
-const bodyParser = require('body-parser')
-const cors = require('cors')
-const morgan = require('morgan')
-const blogsRouter = require('./controllers/blogs')
-const middleware = require('./utils/middleware')
+const express = require('express');
 
-//Middleware initialization
-app.use(cors())
-app.use(bodyParser.json())
+const app = express();
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const morgan = require('morgan');
+const blogsRouter = require('./controllers/blogs');
+const middleware = require('./utils/middleware');
 
-//Morgan inizialization
+// Middleware initialization
+app.use(cors());
+app.use(bodyParser.json());
+
+// Morgan inizialization
 app.use(morgan((tokens, req, res) => {
-  const post = JSON.stringify(res.req.body)
-  const avoidAnnoyingBrackets = post !== '{}' ? post : ''
+  const post = JSON.stringify(res.req.body);
+  const avoidAnnoyingBrackets = post !== '{}' ? post : '';
 
   return [
     tokens.method(req, res),
@@ -22,13 +23,13 @@ app.use(morgan((tokens, req, res) => {
     tokens.res(req, res, 'content-length'), '-',
     tokens['response-time'](req, res), 'ms',
     avoidAnnoyingBrackets,
-  ].join(' ')
-}))
+  ].join(' ');
+}));
 
-//Routes are handled by blogsRouter object on /controlers/blogs.js
-app.use('/api/blogs', blogsRouter)
+// Routes are handled by blogsRouter object on /controlers/blogs.js
+app.use('/api/blogs', blogsRouter);
 
-app.use(middleware.unknownEndpoint)
-app.use(middleware.errorHandler)
+app.use(middleware.unknownEndpoint);
+app.use(middleware.errorHandler);
 
-module.exports = app
+module.exports = app;

@@ -1,11 +1,11 @@
-const app = require('./app')
-const http = require('http')
-const config = require('./utils/config')
+const http = require('http');
+const app = require('./app');
+const config = require('./utils/config');
 
-//App is inizialized
-const server = http.createServer(app)
+// App is inizialized
+const server = http.createServer(app);
 
-const PORT = config.PORT
+const { PORT } = config;
 server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
-})
+  console.log(`Server running on port ${PORT}`);
+});
