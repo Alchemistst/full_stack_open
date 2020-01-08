@@ -179,6 +179,13 @@ const badPostBlog = {
   bad: "Very bad"
 }
 
+//test input for post request with no likes prop
+const postNoLikes = {
+  title: "Test",
+  author: "Testing Testington",
+  url: "http://test.test.com/"
+}
+
 module.exports = {
     listWithOneBlog,
     listWithManyBlogs,
@@ -192,5 +199,7 @@ module.exports = {
     mostLikesLWOB,
     mostLikesLWMB,
     postBlog,
-    badPostBlog
+    badPostBlog,
+    postNoLikes
+
 }

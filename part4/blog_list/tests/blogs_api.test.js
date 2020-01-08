@@ -56,12 +56,19 @@ describe('API tests', () => {
     })
 
     test('Unique id is named id', async () => {
-        //...
-
         const results = await api.get('/api/blogs/')
         results.body.map(res => {
             expect(res.id).toBeDefined()
         })
+    })
+
+    test('Post request with no likes defaults zero', async () => {
+        await api.post('/api/blogs/')
+        .send(values.postNoLikes)
+        .expect(201)
+
+        const results = await api.get('/api/blogs/')
+        expect(results.body[results.body.length-1].likes).toBe(0)
     })
 })
 
