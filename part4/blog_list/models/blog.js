@@ -15,6 +15,14 @@ const blogSchema = mongoose.Schema({
   likes: Number,
 });
 
+blogSchema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
+  }
+})
+
 const Blog = mongoose.model('Blog', blogSchema);
 
 const mongoUrl = config.MONGODB_URI;
@@ -24,10 +32,12 @@ mongoose
       useNewUrlParser: true,
       useUnifiedTopology: true,
     })
-  .then(console.log('Successfylly connected to database.'))
+  .then(console.log('Successfully connected to database.'))
   .catch((res) => {
     console.log(`Something went wrong... ${res}`);
     process.exit(1);
   });
+
+
 
 module.exports = Blog;

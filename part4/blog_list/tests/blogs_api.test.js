@@ -3,6 +3,7 @@ const supertest = require('supertest')
 const app = require('../app')
 const values = require('./test_values')
 const Blog = require('../models/blog')
+const id_format = require('../utils/id_format')
 
 const api = supertest(app)
 
@@ -23,8 +24,45 @@ describe('API tests', () => {
             .expect(200)
             .expect('Content-Type', /application\/json/)
             
-        expect(results.body).toEqual(values.listWithManyBlogs)
+        expect(results.body).toEqual(id_format(values.listWithManyBlogs))
+    })
+
+    test('Adding a new blog works', async () => {
+        await api.post('/api/blogs/')
+        .send(values.postBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+        const results = await api.get('/api/blogs/')
+        expect(results.body.length).toBe(values.listWithManyBlogs.length + 1)
+
+        const resultsNotId = results.body.map(n => {
+            const idLess = {... n}
+            delete idLess.id
+            return idLess
+        })
+
+        expect(resultsNotId).toContainEqual(values.postBlog)
+
+    })
+
+    test('Adding a malformated blog returns error', async () => {
+        await api.post('/api/blogs/')
+        .send(values.badPostBlog)
+        .expect(400)
+
+        const results = await api.get('/api/blogs/')
+        expect(results.body.length).toBe(values.listWithManyBlogs.length)
+    })
+
+    test('Unique id is named id', async () => {
+        //...
+
+        const results = await api.get('/api/blogs/')
+        results.body.map(res => {
+            expect(res.id).toBeDefined()
+        })
     })
 })
 
-afterAll(() => mongoose.connection.close() )
+afterAll(() => mongoose.connection.close())
