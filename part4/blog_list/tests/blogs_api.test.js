@@ -15,7 +15,6 @@ beforeEach(async () => {
         let newBlog = new Blog(blog)
         await newBlog.save()
     }
-   
 })
 
 describe('API tests', () => {
@@ -23,7 +22,7 @@ describe('API tests', () => {
         const results = await api.get('/api/blogs/')
             .expect(200)
             .expect('Content-Type', /application\/json/)
-            
+
         expect(results.body).toEqual(id_format(values.listWithManyBlogs))
     })
 
@@ -69,6 +68,23 @@ describe('API tests', () => {
 
         const results = await api.get('/api/blogs/')
         expect(results.body[results.body.length-1].likes).toBe(0)
+    })
+
+    test('Delete request works', async () => {
+        await api.delete('/api/blogs/'+values.testID)
+        .expect(204)
+
+        await api.get('/api/blogs/'+values.testID)
+        .expect(404)
+    })
+
+    test('Put request works', async () => {
+        await api.put('/api/blogs/'+values.testID).send({likes: 99999})
+        .expect(200)
+
+        const doubleCheck = await api.get('/api/blogs/'+values.testID)
+        expect(doubleCheck.body.likes).toBe(99999)
+        
     })
 })
 
