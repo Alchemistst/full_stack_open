@@ -4,6 +4,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const blogsRouter = require('./controllers/blogs');
+const usersRouter = require('./controllers/users')
 const middleware = require('./utils/middleware');
 const logger = require('./utils/logger');
 const config = require('./utils/config');
@@ -30,8 +31,9 @@ mongoose
   });
 
 
-// Routes are handled by blogsRouter object on /controlers/blogs.js
+// Route handlers
 app.use('/api/blogs', blogsRouter);
+app.use('/api/users', usersRouter);
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);

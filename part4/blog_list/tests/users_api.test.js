@@ -36,6 +36,36 @@ describe('Database', () => {
         const users = await User.find({})
         expect(users.map(user => user.toJSON())).toEqual(id_format(usertest))
     })
+    // test('...can be created', async () => {
+    //     const newUser = {
+    //         name: 'Perry',
+    //         username: 'hissingbastard78',
+    //         pass:'hissingbastard78'
+    //     }
+
+    //     const result = await api.post('/api/users/')
+    //         .send(newUser)
+    //         .expect(201)
+
+    //     delete newUser.pass
+
+    //     expect(result.body).toMatchObject(newUser)
+    // })
 })
+// describe('User', () => {
+//     test('...can be created', async () => {
+//         const newUser = {
+//             name: 'Perry',
+//             username: 'hissingbastard78',
+//             pass:'hissingbastard78'
+//         }
+
+//         const result = await api.post('/api/users/').send(newUser)
+
+//         delete newUser.pass
+
+//         expect(result.body).toMatchObject(newUser)
+//     })
+// })
 
 afterAll(() => mongoose.connection.close())
