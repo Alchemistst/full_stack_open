@@ -15,6 +15,7 @@ beforeEach(async () => {
         let newBlog = new Blog(blog)
         await newBlog.save()
     }
+
 })
 
 describe('API tests', () => {
@@ -24,6 +25,7 @@ describe('API tests', () => {
             .expect('Content-Type', /application\/json/)
 
         expect(results.body).toEqual(id_format(values.listWithManyBlogs))
+       
     })
 
     test('Adding a new blog works', async () => {
@@ -88,4 +90,8 @@ describe('API tests', () => {
     })
 })
 
-afterAll(() => mongoose.connection.close())
+
+
+afterAll(() => {
+    console.log('clossing...')
+    mongoose.connection.close()})
