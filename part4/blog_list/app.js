@@ -3,31 +3,32 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const morgan = require('morgan');
 const blogsRouter = require('./controllers/blogs');
 const middleware = require('./utils/middleware');
 const logger = require('./utils/logger');
+const config = require('./utils/config');
+const mongoose = require('mongoose')
 
 // Middleware initialization
 app.use(cors());
 app.use(bodyParser.json());
 
-// Morgan inizialization
-// app.use(morgan((tokens, req, res) => {
-//   const post = JSON.stringify(res.req.body);
-//   const avoidAnnoyingBrackets = post !== '{}' ? post : '';
-
-//   return [
-//     tokens.method(req, res),
-//     tokens.url(req, res),
-//     tokens.status(req, res),
-//     tokens.res(req, res, 'content-length'), '-',
-//     tokens['response-time'](req, res), 'ms',
-//     avoidAnnoyingBrackets,
-//   ].join(' ');
-// }));
-
 logger.morganInit(app)
+
+const mongoUrl = config.MONGODB_URI;
+mongoose
+  .connect(mongoUrl,
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useFindAndModify: false
+    })
+  .then(logger.info('Successfully connected to database.'))
+  .catch((res) => {
+    logger.error(`Something went wrong... ${res}`);
+    process.exit(1);
+  });
+
 
 // Routes are handled by blogsRouter object on /controlers/blogs.js
 app.use('/api/blogs', blogsRouter);

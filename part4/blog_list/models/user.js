@@ -1,20 +1,22 @@
 const mongoose = require('mongoose');
 
 // Schema definition and validation
-const blogSchema = mongoose.Schema({
-  title: {
+const userSchema = mongoose.Schema({
+  name: {
     type: String,
     required: true,
   },
-  author: String,
-  url: {
+  passhash: {
     type: String,
     required: true,
   },
-  likes: Number,
+  username: {
+    type: String,
+    required: true,
+  }
 });
 
-blogSchema.set('toJSON', {
+userSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
@@ -22,9 +24,9 @@ blogSchema.set('toJSON', {
   }
 })
 
-const Blog = mongoose.model('Blog', blogSchema);
+const User = mongoose.model('User', userSchema);
 
 
 
 
-module.exports = Blog;
+module.exports = User;
