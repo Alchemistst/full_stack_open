@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-const config = require('../utils/config');
-const logger = require('../utils/logger')
 
 // Schema definition and validation
 const blogSchema = mongoose.Schema({
@@ -26,19 +24,6 @@ blogSchema.set('toJSON', {
 
 const Blog = mongoose.model('Blog', blogSchema);
 
-const mongoUrl = config.MONGODB_URI;
-mongoose
-  .connect(mongoUrl,
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useFindAndModify: false
-    })
-  .then(logger.info('Successfully connected to database.'))
-  .catch((res) => {
-    logger.error(`Something went wrong... ${res}`);
-    process.exit(1);
-  });
 
 
 
