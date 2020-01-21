@@ -3,22 +3,27 @@ const supertest = require('supertest')
 const app = require('../app')
 const values = require('./test_values')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const id_format = require('../utils/id_format')
+const _ = require('lodash')
 
 const api = supertest(app)
 
-beforeEach(async () => {
-    await Blog.deleteMany({})
 
-    for (let blog of values.listWithManyBlogs) {
 
-        let newBlog = new Blog(blog)
-        await newBlog.save()
-    }
-})
+describe('Blog API tests', () => {
 
-describe('API tests', () => {
-    test('database is correctly initialized', async () =>{
+    beforeEach(async () => {
+        await Blog.deleteMany({})
+    
+        for (let blog of values.listWithManyBlogs) {
+    
+            let newBlog = new Blog(blog)
+            await newBlog.save()
+        }
+    })
+
+    test('All blogs can be requested', async () =>{
         const results = await api.get('/api/blogs/')
             .expect(200)
             .expect('Content-Type', /application\/json/)
@@ -85,6 +90,68 @@ describe('API tests', () => {
         const doubleCheck = await api.get('/api/blogs/'+values.testID)
         expect(doubleCheck.body.likes).toBe(99999)
         
+    })
+})
+
+const usertest = [
+    {
+        _id: '5e1b64ad8c9ad54f142d5a78',
+        name: 'Pady',
+        passhash: '$2a$10$bumqPhD3NwPfybIVMx58k.Ii.3CMRoPbJD71t7ePqOYwoGfcVSKki',
+        username: 'wishkerlicker39'
+    },
+    {
+        _id: '5e1b64ad8c9ad54f142d5a79',
+        name: 'Angus',
+        passhash: '$2a$10$MiM.aTwBGjyd5fDeIKh8xeLawftMk4grEPDKJcYnXRz4.uinRC9pu',
+        username: 'bloodthirstycat76'
+    }
+]
+
+describe('Users API tests', () => {
+    beforeEach(async () => {
+        await User.deleteMany({})
+    
+        for (let user of usertest) {
+    
+            let newUser = new User(user)
+            await newUser.save()
+        }
+    })
+
+    test('User database is correctly initialized', async () => {
+        const users = await User.find({})
+        expect(users.map(user => user.toJSON())).toEqual(id_format(usertest))
+    })
+
+    test('Users can be created', async () => {
+        const newUser = {
+            name: 'Perry',
+            username: 'hissingbastard78',
+            pass:'hissingbastard78'
+        }
+
+        const result = await api.post('/api/users/')
+            .send(newUser)
+            .expect(201)
+
+        delete newUser.pass
+
+        expect(result.body).toMatchObject(newUser)
+    })
+
+    test('Information of all users is displayed', async () => {
+        const result = await api.get('/api/users/')
+            .expect(200)
+            .expect('Content-Type', /application\/json/)
+
+        const correctFormat = _.cloneDeep(usertest)
+            .map( u => {
+                delete u.passhash
+                return u
+            })
+
+        expect(result.body).toEqual(id_format(correctFormat))
     })
 })
 

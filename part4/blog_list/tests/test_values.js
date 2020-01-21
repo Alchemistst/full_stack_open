@@ -212,5 +212,4 @@ module.exports = {
     badPostBlog,
     postNoLikes,
     testID
-
 }

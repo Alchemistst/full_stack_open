@@ -1,10 +1,8 @@
 const User = require('../models/user')
-const supertest = require('supertest')
+//const supertest = require('supertest')
 const mongoose = require('mongoose')
-const app = require('../app')
+//const app = require('../app') <---- This friker here is causing the problem
 const id_format = require('../utils/id_format')
-
-const api = supertest(app)
 
 const usertest = [
     {
@@ -32,25 +30,25 @@ beforeEach(async () => {
 })
 
 describe('Database', () => {
-    test('...is correctly initialized', async () => {
+    test('...hd', async () => {
         const users = await User.find({})
         expect(users.map(user => user.toJSON())).toEqual(id_format(usertest))
     })
-    // test('...can be created', async () => {
-    //     const newUser = {
-    //         name: 'Perry',
-    //         username: 'hissingbastard78',
-    //         pass:'hissingbastard78'
-    //     }
+    test('...can be created', async () => {
+        const newUser = {
+            name: 'Perry',
+            username: 'hissingbastard78',
+            pass:'hissingbastard78'
+        }
 
-    //     const result = await api.post('/api/users/')
-    //         .send(newUser)
-    //         .expect(201)
+        const result = await api.post('/api/users/')
+            .send(newUser)
+            .expect(201)
 
-    //     delete newUser.pass
+        delete newUser.pass
 
-    //     expect(result.body).toMatchObject(newUser)
-    // })
+        expect(result.body).toMatchObject(newUser)
+    })
 })
 // describe('User', () => {
 //     test('...can be created', async () => {
