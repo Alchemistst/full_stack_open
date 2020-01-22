@@ -1,15 +1,16 @@
 const blogsRouter = require('express').Router();
 const Blog = require('../models/blog');
+const User = require('../models/user')
 
 blogsRouter.get('/', async (req, res) => {
 
-  const blogs = await Blog.find({})
+  const blogs = await Blog.find({}).populate('user',  { passhash: 0, blogs: 0 })
   res.status(200).json(blogs.map(b => b.toJSON()))
 
 });
 
 blogsRouter.get('/:id', async (req, res, next) => {
-  const blog = await Blog.findById(req.params.id)
+  const blog = await Blog.findById(req.params.id).populate('user', { passhash: 0, blogs: 0 })
  try{
     if (blog){
       res.status(200).json(blog.toJSON())
@@ -28,17 +29,27 @@ blogsRouter.put('/:id', async (req, res, next) => {
 
 blogsRouter.post('/', async (req, res, next) => {
 
+  const userInSession = '5e1b64ad8c9ad54f142d5a78'
+
   const { body } = req;
 
   const blog = new Blog({
       title: body.title,
       author: body.author,
       url: body.url,
+      user: userInSession,
       likes: body.likes || 0
-    });
-
+  });
+  
+  
+  
   try{
     const result = await blog.save()
+
+    const updatedUser = await User.findById(userInSession)
+    updatedUser.blogs.push(result.toJSON().id)
+    await User.findByIdAndUpdate(userInSession, { blogs: updatedUser.blogs }, { new: true, runValidators: true})
+
     res.status(201).json(result)  
   } catch (err) {
     next(err)
@@ -61,3 +72,8 @@ blogsRouter.delete('/:id', async (req, res, next) => {
 })
 
 module.exports = blogsRouter;
+
+
+//TODO: Each blog contains info about creator
+//TODO: When new blog is created, any user is asigned as creator
+//TODO: Use populate in both blogs and users

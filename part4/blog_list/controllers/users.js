@@ -3,8 +3,9 @@ const User = require('../models/user')
 const bcrypt = require('bcryptjs')
 const _ = require('lodash')
 
+
 userRouter.get('/', async (req,res) => {
-    let result = await User.find({})
+    let result = await User.find({}).populate('blogs', { likes: 0, user: 0})
 
     result = result.map( r => {
         r = r.toJSON()
@@ -18,6 +19,18 @@ userRouter.get('/', async (req,res) => {
 userRouter.post('/', async (req, res, next) => {
     
     const { body } = req
+
+    if(!body.pass || !body.username){
+        return res.status(400).json({
+            error: 'Missing username or password.'
+        })
+    }
+
+    if(body.pass.length < 3 || body.username.length < 3){
+        return res.status(400).json({
+            error: 'Username or password too short.'
+        })
+    }
 
     const user = new User({
         name: body.name,

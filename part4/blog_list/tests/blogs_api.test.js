@@ -153,6 +153,92 @@ describe('Users API tests', () => {
 
         expect(result.body).toEqual(id_format(correctFormat))
     })
+
+    test('Username must be given', async () => {
+        const badUser = {
+            name: 'badUser',
+            username: '',
+            pass: 'badUser'
+        }
+        
+        const result = await api.post('/api/users/')
+        .send(badUser)
+        .expect(400)
+
+        expect(result.body.error).toBe('Missing username or password.')
+        
+        const dbCheck = await User.find({ name: 'badUser'})
+        expect(dbCheck).toEqual([])
+    })
+
+    test('Password must be given', async () => {
+        const badUser = {
+            name: 'badUser',
+            username: 'badUser',
+            pass: ''
+        }
+       
+        const result = await api.post('/api/users/')
+        .send(badUser)
+        .expect(400)
+
+        expect(result.body.error).toBe('Missing username or password.')
+
+        const dbCheck = await User.find({ name: 'badUser'})
+        expect(dbCheck).toEqual([])
+    })
+
+    test('Username must be unique', async () => {
+        const duplicate = {
+            name: 'duplicate',
+            username: 'wishkerlicker39',
+            pass: 'wishkerlicker39'
+        }
+
+        const result = await api.post('/api/users/')
+        .send(duplicate)
+        .expect(400)
+
+        expect(result.body.error).toBe('User validation failed: username: Error, expected `username` to be unique. Value: `wishkerlicker39`')
+
+        const dbCheck = await User.find({ name: 'duplicate'})
+        expect(dbCheck).toEqual([])
+    })
+
+    test('Password is at least 3 character long', async() => {
+        const badUser = {
+            name: 'badUser',
+            username: 'badUser',
+            pass: 'co'
+        }
+
+        const result = await api.post('/api/users/')
+        .send(badUser)
+        .expect(400)
+
+        expect(result.body.error).toBe('Username or password too short.')
+
+        const dbCheck = await User.find({ name: 'badUser'})
+        expect(dbCheck).toEqual([])
+    })
+
+    test('Username is at least 3 character long', async() => {
+        const badUser = {
+            name: 'badUser',
+            username: 'co',
+            pass: 'badUser'
+        }
+
+        const result = await api.post('/api/users/')
+        .send(badUser)
+        .expect(400)
+
+        expect(result.body.error).toBe('Username or password too short.')
+
+        const dbCheck = await User.find({ name: 'badUser'})
+        expect(dbCheck).toEqual([])
+    })
+
 })
 
 afterAll(() => mongoose.connection.close())

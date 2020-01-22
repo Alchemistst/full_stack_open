@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const uniqueVal = require('mongoose-unique-validator')
 
 // Schema definition and validation
 const userSchema = mongoose.Schema({
@@ -13,8 +14,15 @@ const userSchema = mongoose.Schema({
   username: {
     type: String,
     required: true,
-  }
+    unique: true
+  },
+  blogs: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Blog'
+  }]
 });
+
+userSchema.plugin(uniqueVal)
 
 userSchema.set('toJSON', {
   transform: (document, returnedObject) => {
