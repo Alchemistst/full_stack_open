@@ -73,7 +73,3 @@ blogsRouter.delete('/:id', async (req, res, next) => {
 
 module.exports = blogsRouter;
 
-
-//TODO: Each blog contains info about creator
-//TODO: When new blog is created, any user is asigned as creator
-//TODO: Use populate in both blogs and users

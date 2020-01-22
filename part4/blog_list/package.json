@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "cross-env NODE_ENV=production node index.js",
-    "watch": "cross-env NODE_ENV=test nodemon index.js",
+    "watch": "cross-env NODE_ENV=development nodemon index.js",
     "lintmebaby": "eslint ../blog_list --fix",
     "test": "cross-env NODE_ENV=test jest --verbose --runInBand"
   },
@@ -26,6 +26,7 @@
     "cross-env": "^6.0.3",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.15",
     "mongoose": "^5.8.1",
     "mongoose-unique-validator": "^2.0.3",

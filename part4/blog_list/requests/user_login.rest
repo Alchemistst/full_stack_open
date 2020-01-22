@@ -1,0 +1,17 @@
+post http://localhost:3003/api/login/
+Content-Type: application/json
+
+    {
+        "username": "wishkerlicker69",
+        "pass": "wishkerlicker69"
+    }
+
+###
+post http://localhost:3003/api/users/
+Content-Type: application/json
+
+    {
+        "name": "Pudo",
+        "username": "wishkerlicker69",
+        "pass": "wishkerlicker69"
+    }
