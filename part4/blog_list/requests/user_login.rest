@@ -2,8 +2,8 @@ post http://localhost:3003/api/login/
 Content-Type: application/json
 
     {
-        "username": "wishkerlicker69",
-        "pass": "wishkerlicker69"
+        "username": "hissingbastard43",
+        "pass": "hissingbastard43"
     }
 
 ###
@@ -11,7 +11,18 @@ post http://localhost:3003/api/users/
 Content-Type: application/json
 
     {
-        "name": "Pudo",
-        "username": "wishkerlicker69",
-        "pass": "wishkerlicker69"
+        "name": "Perry",
+        "username": "hissingbastard43",
+        "pass": "hissingbastard43"
+    }
+###
+post http://localhost:3003/api/blogs/
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imhpc3NpbmdiYXN0YXJkNDMiLCJpZCI6IjVlMjg3ZDYwZTM1NzY3MTk4YzhlNDExYSIsImlhdCI6MTU3OTcxMTg2NX0.B4cNoO_cKTRLFVx0612e6uBvtxAVk_klS1LTOV1lJPE
+    
+    {
+        "title": "Perry blog",
+        "author": "Perry Perrintong",
+        "url": "www.perryperringtong.com",
+        "likes": 2
     }
