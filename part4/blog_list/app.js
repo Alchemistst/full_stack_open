@@ -31,6 +31,7 @@ mongoose
     process.exit(1);
   });
 
+app.use(middleware.tokenExtractor)
 
 // Route handlers
 app.use('/api/blogs', blogsRouter);

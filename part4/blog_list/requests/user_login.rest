@@ -2,8 +2,8 @@ post http://localhost:3003/api/login/
 Content-Type: application/json
 
     {
-        "username": "hissingbastard43",
-        "pass": "hissingbastard43"
+        "username": "bloodthirstycat21",
+        "pass": "bloodthirstycat21"
     }
 
 ###
@@ -11,18 +11,18 @@ post http://localhost:3003/api/users/
 Content-Type: application/json
 
     {
-        "name": "Perry",
-        "username": "hissingbastard43",
-        "pass": "hissingbastard43"
+        "name": "Angus",
+        "username": "bloodthirstycat21",
+        "pass": "bloodthirstycat21"
     }
 ###
 post http://localhost:3003/api/blogs/
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imhpc3NpbmdiYXN0YXJkNDMiLCJpZCI6IjVlMjg3ZDYwZTM1NzY3MTk4YzhlNDExYSIsImlhdCI6MTU3OTcxMTg2NX0.B4cNoO_cKTRLFVx0612e6uBvtxAVk_klS1LTOV1lJPE
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJsb29kdGhpcnN0eWNhdDIxIiwiaWQiOiI1ZTI4ODM4NDFjYzYxYjFkNjA0ZGFjNGUiLCJpYXQiOjE1Nzk3MTM0NDN9.wqmBwrk80JfTk6n_dyW11Fj5Y39vLxOHbdcUsfDHlyk
     
     {
-        "title": "Perry blog",
-        "author": "Perry Perrintong",
-        "url": "www.perryperringtong.com",
-        "likes": 2
+        "title": "Angus 2nd blog",
+        "author": "Angus Angstius",
+        "url": "www.angusangustius.com",
+        "likes": 29
     }
