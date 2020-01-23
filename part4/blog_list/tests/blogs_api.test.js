@@ -1,62 +1,129 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
-const values = require('./test_values')
 const Blog = require('../models/blog')
 const User = require('../models/user')
 const id_format = require('../utils/id_format')
+const unpopulate = require('../utils/unpopulate')
 const _ = require('lodash')
 
 const api = supertest(app)
 
+const listWithManyBlogs = [
+    {
+        _id: "5a422a851b54a676234d17f7",
+        title: "React patterns",
+        author: "Michael Chan",
+        url: "https://reactpatterns.com/",
+        likes: 7,
+        user: '5e297089f94620184812af74',
+        __v: 0
+            },
+      {
+        _id: "5a422aa71b54a676234d17f8",
+        title: "Go To Statement Considered Harmful",
+        author: "Edsger W. Dijkstra",
+        url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
+        likes: 5,
+        user: '5e297089f94620184812af74',
+        __v: 0
+            }
+]
+
+const listWithManyUsers = [
+    {
+        _id: '5e1b64ad8c9ad54f142d5a78',
+        name: 'Pady',
+        passhash: '$2a$10$bumqPhD3NwPfybIVMx58k.Ii.3CMRoPbJD71t7ePqOYwoGfcVSKki',
+        username: 'wishkerlicker39',
+        blogs: []
+    },
+    {
+        _id: '5e1b64ad8c9ad54f142d5a79',
+        name: 'Angus',
+        passhash: '$2a$10$MiM.aTwBGjyd5fDeIKh8xeLawftMk4grEPDKJcYnXRz4.uinRC9pu',
+        username: 'bloodthirstycat76',
+        blogs: []
+    }
+]
+
+const testBlog = {
+    title: "Test are good",
+    author: "Testing Testington",
+    url: "http://test.test.com/",
+    likes: 99
+  }
+
+const testUser =
+    {
+        _id: '5e297089f94620184812af74',
+        name: "Tester McTestingtay",
+        username: "testPasser45",
+        blogs: [],
+        passhash:'$2a$10$v8XQw69WgbBWuO9RkXKxVuz7/EfybBbLgmo1IBjjwy4Fu.X1s7Hpu', 
+    }
 
 
 describe('Blog API tests', () => {
 
     beforeEach(async () => {
         await Blog.deleteMany({})
+        await User.deleteMany({})
     
-        for (let blog of values.listWithManyBlogs) {
+        for (let blog of listWithManyBlogs) {
     
             let newBlog = new Blog(blog)
             await newBlog.save()
         }
+
+        const newTestUser = new User(testUser)
+        await newTestUser.save()
     })
 
     test('All blogs can be requested', async () =>{
-        const results = await api.get('/api/blogs/')
+        let results = await api.get('/api/blogs/')
             .expect(200)
             .expect('Content-Type', /application\/json/)
-
-        expect(results.body).toEqual(id_format(values.listWithManyBlogs))
+        
+        
+        expect(results.body.map(r => {
+            r.user = unpopulate(r.user)
+            return r})
+        ).toEqual(id_format(listWithManyBlogs))
     })
 
     test('Adding a new blog works', async () => {
+
         await api.post('/api/blogs/')
-        .send(values.postBlog)
+        .set('Authorization', 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RQYXNzZXI0NSIsImlkIjoiNWUyOTcwODlmOTQ2MjAxODQ4MTJhZjc0IiwiaWF0IjoxNTc5Nzc1NDY0fQ.pd1JGgD8GaxrbQY5jxlKWXXS3SBY9xlPoTTVpGIarAM' )
+        .send(testBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
 
         const results = await api.get('/api/blogs/')
-        expect(results.body.length).toBe(values.listWithManyBlogs.length + 1)
-
-        const resultsNotId = results.body.map(n => {
-            const idLess = {... n}
-            delete idLess.id
-            return idLess
+        expect(results.body.length).toBe(listWithManyBlogs.length + 1)
+        
+        let resultsInFormat = results.body.map(r => {
+            delete r.id
+            r.user = unpopulate(r.user)
+            return r
         })
 
-        expect(resultsNotId).toContainEqual(values.postBlog)
+        let testBlogInFormat = {...testBlog}
+        testBlogInFormat.user = testUser._id
+
+        expect(resultsInFormat).toContainEqual(testBlogInFormat)
 
     })
 
     test('Adding a malformated blog returns error', async () => {
         await api.post('/api/blogs/')
-        .send(values.badPostBlog)
+        .set('Authorization', 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RQYXNzZXI0NSIsImlkIjoiNWUyOTcwODlmOTQ2MjAxODQ4MTJhZjc0IiwiaWF0IjoxNTc5Nzc1NDY0fQ.pd1JGgD8GaxrbQY5jxlKWXXS3SBY9xlPoTTVpGIarAM' )
+        .send({})
         .expect(400)
 
         const results = await api.get('/api/blogs/')
-        expect(results.body.length).toBe(values.listWithManyBlogs.length)
+        expect(results.body.length).toBe(listWithManyBlogs.length)
     })
 
     test('Unique id is named id', async () => {
@@ -66,9 +133,12 @@ describe('Blog API tests', () => {
         })
     })
 
-    test('Post request with no likes defaults zero', async () => {
+    test('Blog with no likes defaults zero', async () => {
+        const blogNoLikes = {...testBlog}
+        delete blogNoLikes.likes
         await api.post('/api/blogs/')
-        .send(values.postNoLikes)
+        .set('Authorization', 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RQYXNzZXI0NSIsImlkIjoiNWUyOTcwODlmOTQ2MjAxODQ4MTJhZjc0IiwiaWF0IjoxNTc5Nzc1NDY0fQ.pd1JGgD8GaxrbQY5jxlKWXXS3SBY9xlPoTTVpGIarAM' )
+        .send(blogNoLikes)
         .expect(201)
 
         const results = await api.get('/api/blogs/')
@@ -76,43 +146,31 @@ describe('Blog API tests', () => {
     })
 
     test('Delete request works', async () => {
-        await api.delete('/api/blogs/'+values.testID)
+        const testID = listWithManyBlogs[0]._id
+        await api.delete('/api/blogs/'+testID)
+        .set('Authorization', 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RQYXNzZXI0NSIsImlkIjoiNWUyOTcwODlmOTQ2MjAxODQ4MTJhZjc0IiwiaWF0IjoxNTc5Nzc1NDY0fQ.pd1JGgD8GaxrbQY5jxlKWXXS3SBY9xlPoTTVpGIarAM' )
         .expect(204)
 
-        await api.get('/api/blogs/'+values.testID)
+        await api.get('/api/blogs/'+testID)
         .expect(404)
     })
 
     test('Put request works', async () => {
-        await api.put('/api/blogs/'+values.testID).send({likes: 99999})
+        const testID = listWithManyBlogs[0]._id
+        await api.put('/api/blogs/'+testID).send({likes: 99999})
         .expect(200)
 
-        const doubleCheck = await api.get('/api/blogs/'+values.testID)
+        const doubleCheck = await api.get('/api/blogs/'+testID)
         expect(doubleCheck.body.likes).toBe(99999)
         
     })
 })
 
-const usertest = [
-    {
-        _id: '5e1b64ad8c9ad54f142d5a78',
-        name: 'Pady',
-        passhash: '$2a$10$bumqPhD3NwPfybIVMx58k.Ii.3CMRoPbJD71t7ePqOYwoGfcVSKki',
-        username: 'wishkerlicker39'
-    },
-    {
-        _id: '5e1b64ad8c9ad54f142d5a79',
-        name: 'Angus',
-        passhash: '$2a$10$MiM.aTwBGjyd5fDeIKh8xeLawftMk4grEPDKJcYnXRz4.uinRC9pu',
-        username: 'bloodthirstycat76'
-    }
-]
-
 describe('Users API tests', () => {
     beforeEach(async () => {
         await User.deleteMany({})
     
-        for (let user of usertest) {
+        for (let user of listWithManyUsers) {
     
             let newUser = new User(user)
             await newUser.save()
@@ -121,7 +179,7 @@ describe('Users API tests', () => {
 
     test('User database is correctly initialized', async () => {
         const users = await User.find({})
-        expect(users.map(user => user.toJSON())).toEqual(id_format(usertest))
+        expect(users.map(user => user.toJSON())).toEqual(id_format(listWithManyUsers))
     })
 
     test('Users can be created', async () => {
@@ -145,7 +203,7 @@ describe('Users API tests', () => {
             .expect(200)
             .expect('Content-Type', /application\/json/)
 
-        const correctFormat = _.cloneDeep(usertest)
+        const correctFormat = _.cloneDeep(listWithManyUsers)
             .map( u => {
                 delete u.passhash
                 return u

@@ -173,28 +173,6 @@ const mostLikesLWMB = {
   likes: 12
 }
 
-//test input for post request
-const postBlog = {
-  title: "Test",
-  author: "Testing Testington",
-  url: "http://test.test.com/",
-  likes: 99
-}
-
-//test input for malformated post request
-const badPostBlog = {
-  bad: "Very bad"
-}
-
-//test input for post request with no likes prop
-const postNoLikes = {
-  title: "Test",
-  author: "Testing Testington",
-  url: "http://test.test.com/"
-}
-
-//test input for delete request
-const testID = "5a422a851b54a676234d17f7"
 
 module.exports = {
     listWithOneBlog,
@@ -207,9 +185,5 @@ module.exports = {
     mostBlogsLWMB,
     listWithBlogsDispute,
     mostLikesLWOB,
-    mostLikesLWMB,
-    postBlog,
-    badPostBlog,
-    postNoLikes,
-    testID
+    mostLikesLWMB
 }
