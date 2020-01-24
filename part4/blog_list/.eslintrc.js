@@ -4,7 +4,8 @@ module.exports = {
     commonjs: true,
     es6: true,
     node: true,
-    jest: true
+    jest: true,
+    mongo: true
   },
   extends: [
     'plugin:react/recommended',
@@ -24,5 +25,7 @@ module.exports = {
     'react',
   ],
   rules: {
+    "no-underscore-dangle": 0,
+    "no-param-reassign": [2, { "props": false }]
   },
 };

@@ -3,19 +3,19 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const mongoose = require('mongoose');
 const blogsRouter = require('./controllers/blogs');
 const usersRouter = require('./controllers/users');
-const loginRouter = require('./controllers/login')
+const loginRouter = require('./controllers/login');
 const middleware = require('./utils/middleware');
 const logger = require('./utils/logger');
 const config = require('./utils/config');
-const mongoose = require('mongoose')
 
 // Middleware initialization
 app.use(cors());
 app.use(bodyParser.json());
 
-logger.morganInit(app)
+logger.morganInit(app);
 
 const mongoUrl = config.MONGODB_URI;
 mongoose
@@ -23,7 +23,7 @@ mongoose
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      useFindAndModify: false
+      useFindAndModify: false,
     })
   .then(logger.info('Successfully connected to database.'))
   .catch((res) => {
@@ -31,7 +31,7 @@ mongoose
     process.exit(1);
   });
 
-app.use(middleware.tokenExtractor)
+app.use(middleware.tokenExtractor);
 
 // Route handlers
 app.use('/api/blogs', blogsRouter);

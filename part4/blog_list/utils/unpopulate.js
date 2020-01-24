@@ -1,8 +1,8 @@
 const unpopulate = (property) => {
-        if(Array.isArray(property)){
-            return property.map( p => p.id)
-        }
-        return property.id
-}
+  if (Array.isArray(property)) {
+    return property.map((p) => p.id);
+  }
+  return property.id;
+};
 
-module.exports = unpopulate
+module.exports = unpopulate;

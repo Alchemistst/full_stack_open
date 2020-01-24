@@ -1,11 +1,12 @@
 const http = require('http');
 const app = require('./app');
 const config = require('./utils/config');
+const logger = require('./utils/logger');
 
 // App is inizialized
 const server = http.createServer(app);
 
 const { PORT } = config;
 server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  logger.info(`Server running on port ${PORT}`);
 });
