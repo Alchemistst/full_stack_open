@@ -26,6 +26,7 @@ function App() {
   useEffect(() => {
     const session = JSON.parse(window.localStorage.getItem('blogListUser'))
     setUser( session ? session : null )
+    blogServices.getToken(session.token)
   }, [])
 
   
@@ -45,7 +46,7 @@ function App() {
         <div>
           <h1>{user.name}'s BLOGS</h1>
           <button onClick={(e) => logOut(e, setUser)}>Log out</button>
-          <NewBlogForm/>
+          <NewBlogForm blogs={blogs} setBlogs={setBlogs}/>
           {blogs.map(b => <Blog key={b.id} blog={b} />)}
         </div>
       }
