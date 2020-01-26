@@ -4,6 +4,13 @@ import blogServices from './services/blogs'
 //Components
 import LogInForm from './components/LogInForm'
 import Blog from './components/Blog'
+import NewBlogForm from './components/NewBlogForm'
+
+const logOut = (e, setUser) => {
+  e.preventDefault()
+  window.localStorage.removeItem('blogListUser')
+  setUser(null)
+}
 
 function App() {
   const [blogs, setBlogs] = useState([])
@@ -14,6 +21,11 @@ function App() {
   useEffect(() => {
     blogServices.getAll()
       .then(res => setBlogs(res))
+  }, [])
+
+  useEffect(() => {
+    const session = JSON.parse(window.localStorage.getItem('blogListUser'))
+    setUser( session ? session : null )
   }, [])
 
   
@@ -31,7 +43,9 @@ function App() {
 
       {user !== null &&
         <div>
-          <h1>{user.username}'s BLOGS</h1>
+          <h1>{user.name}'s BLOGS</h1>
+          <button onClick={(e) => logOut(e, setUser)}>Log out</button>
+          <NewBlogForm/>
           {blogs.map(b => <Blog key={b.id} blog={b} />)}
         </div>
       }

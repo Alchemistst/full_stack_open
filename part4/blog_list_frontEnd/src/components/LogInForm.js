@@ -3,7 +3,12 @@ import blogServices from '../services/blogs'
 
 const handleLogIn = async (e, username, setUsername, pass, setPassword, setUser) => {
     e.preventDefault()
-    setUser(await blogServices.logIn({username, pass}))
+
+    const user = await blogServices.logIn({username, pass})
+    setUser(user)
+
+    window.localStorage.setItem('blogListUser', JSON.stringify(user))
+
     setUsername('')
     setPassword('')
 }

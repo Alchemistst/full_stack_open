@@ -4,7 +4,6 @@ const baseUrl = 'http://localhost:3003/api/'
 
 const getAll = async () => {
     const result = await axios.get(baseUrl+'blogs/')
-    console.log(result.data)
     return result.data
 }
 
