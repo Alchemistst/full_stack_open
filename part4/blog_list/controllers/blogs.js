@@ -54,7 +54,7 @@ blogsRouter.post('/', async (req, res, next) => {
 
   const blog = new Blog({
     title: body.title,
-    author: body.author,
+    author: body.author || 'anonymous',
     url: body.url,
     user: userInSession,
     likes: body.likes || 0,

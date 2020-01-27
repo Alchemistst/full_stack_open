@@ -2,21 +2,35 @@ import React from 'react'
 import { useState } from 'react'
 import blogServices from '../services/blogs'
 
-const handleCreate = async (e, newBlog, setters, blogs, setBlogs) => {
+const handleCreate = async (e, newBlog, setters, blogs, setBlogs, setMessage) => {
     e.preventDefault()
     
-    const blogsUpdated = [...blogs]
-    blogsUpdated.push(await blogServices.newBlog(newBlog))
-    setBlogs(blogsUpdated)
-    
-    setters.setTitle('')
-    setters.setAuthor('')
-    setters.setUrl('')
+    try{
+        const blogsUpdated = [...blogs]
+        
+        newBlog.author = newBlog.author || 'anonymous'
 
-    
+        blogsUpdated.push(await blogServices.newBlog(newBlog))
+        
+        setBlogs(blogsUpdated)
+        
+        setMessage({
+            err: 'message',
+            mes: `Added ${newBlog.title} by ${newBlog.author}.`
+        })
+        
+        setters.setTitle('')
+        setters.setAuthor('')
+        setters.setUrl('')
+    }catch(err){
+        setMessage({
+            err: 'error',
+            mes: err.response.data.error
+        })
+    }    
 }
 
-const NewBlogForm = ({blogs, setBlogs}) => {
+const NewBlogForm = ({blogs, setBlogs, setMessage}) => {
 
     const [title, setTitle] = useState('')
     const [author, setAuthor] = useState('')
@@ -42,12 +56,12 @@ const NewBlogForm = ({blogs, setBlogs}) => {
                     Title: <input type='text' value={title} onChange={e => setTitle(e.target.value)}/>
                 </div>
                 <div>
-                    Author: <input type='text' value={author} onChange={e => setAuthor(e.target.value)}/>
+                    Author: <input type='text' value={author} onChange={e => setAuthor(e.target.value || 'anonymous')}/>
                 </div>
                 <div>
                     Url: <input type='text' value={url} onChange={e => setUrl(e.target.value)}/>
                 </div>
-                <input type='submit' value='Create' onClick={e => handleCreate(e, newBlog, setters, blogs, setBlogs)}/>
+                <input type='submit' value='Create' onClick={e => handleCreate(e, newBlog, setters, blogs, setBlogs, setMessage)}/>
             </form>
         </div>
     )

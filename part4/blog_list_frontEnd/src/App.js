@@ -5,6 +5,7 @@ import blogServices from './services/blogs'
 import LogInForm from './components/LogInForm'
 import Blog from './components/Blog'
 import NewBlogForm from './components/NewBlogForm'
+import Message from './components/Message'
 
 const logOut = (e, setUser) => {
   e.preventDefault()
@@ -17,6 +18,7 @@ function App() {
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [message, setMessage] = useState({ err: '', mes: null})
 
   useEffect(() => {
     blogServices.getAll()
@@ -25,14 +27,17 @@ function App() {
 
   useEffect(() => {
     const session = JSON.parse(window.localStorage.getItem('blogListUser'))
-    setUser( session ? session : null )
-    blogServices.getToken(session.token)
+    if(session){
+      setUser(session)
+      blogServices.getToken(session.token)
+    }
   }, [])
 
   
 
   return (
     <div className="App">
+      <Message message={message} setMessage={setMessage}/>
       {user === null && 
         <LogInForm 
           username={username} 
@@ -40,13 +45,21 @@ function App() {
           setUsername={setUsername}
           setPassword={setPassword}
           setUser={setUser}
+          setMessage={setMessage}
       />}
 
       {user !== null &&
         <div>
           <h1>{user.name}'s BLOGS</h1>
+          
           <button onClick={(e) => logOut(e, setUser)}>Log out</button>
-          <NewBlogForm blogs={blogs} setBlogs={setBlogs}/>
+         
+          <NewBlogForm 
+            blogs={blogs} 
+            setBlogs={setBlogs}
+            setMessage={setMessage}
+          />
+
           {blogs.map(b => <Blog key={b.id} blog={b} />)}
         </div>
       }

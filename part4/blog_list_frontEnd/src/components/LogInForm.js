@@ -1,31 +1,47 @@
 import React from 'react'
 import blogServices from '../services/blogs'
 
-const handleLogIn = async (e, username, setUsername, pass, setPassword, setUser) => {
-    e.preventDefault()
+const handleLogIn = async (e, props) => {
+  e.preventDefault()
+  
+  if(props.username === '' || props.password === ''){
+    return props.setMessage({
+      err: 'error',
+      mes: 'Username and password are required.'
+    })
+  }
 
-    const user = await blogServices.logIn({username, pass})
-    setUser(user)
+  try{
+    
+    const user = await blogServices.logIn({ username : props.username, pass : props.password})
+    props.setUser(user)
 
     window.localStorage.setItem('blogListUser', JSON.stringify(user))
 
-    setUsername('')
-    setPassword('')
+    props.setUsername('')
+    props.setPassword('')
+  }catch(err){
+    props.setMessage({
+      err: 'error',
+      mes: err.response.data.error
+    })
+  }
+    
 }
 
-const LogInForm = ({username, password, setUsername, setPassword, setUser}) => {
+const LogInForm = (props) => {
 
     return(
         <div>
         <h1>Log in to application</h1>
         <form>
           <div>
-            Username: <input type="text" value={username} onChange={(e) => setUsername(e.target.value)}/>
+            Username: <input type="text" value={props.username} onChange={(e) => props.setUsername(e.target.value)}/>
           </div>
           <div>
-            Password: <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+            Password: <input type="password" value={props.password} onChange={(e) => props.setPassword(e.target.value)} />
           </div>
-          <input type="submit" value="Log in" onClick={(e) => handleLogIn(e, username, setUsername, password, setPassword, setUser)}/>
+          <input type="submit" value="Log in" onClick={(e) => handleLogIn(e, props)}/>
         </form>
       </div>
     )
