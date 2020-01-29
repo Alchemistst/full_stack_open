@@ -3,7 +3,7 @@ import blogServices from './services/blogs'
 
 //Components
 import LogInForm from './components/LogInForm'
-import Blog from './components/Blog'
+import BlogsDisplay from './components/BlogsDisplay'
 import NewBlogForm from './components/NewBlogForm'
 import Message from './components/Message'
 import Togglable from './components/Togglable'
@@ -24,7 +24,19 @@ function App() {
 
   useEffect(() => {
     blogServices.getAll()
-      .then(res => setBlogs(res))
+      .then(res => {
+        res.sort((a,b) => {
+          if(a.likes > b.likes){
+              return -1
+          }
+  
+          if(a.likes < b.likes){
+              return 1
+          }
+  
+          return 0
+      })
+        setBlogs(res)})
   }, [])
 
   useEffect(() => {
@@ -64,7 +76,9 @@ function App() {
             />
           </Togglable>
 
-          {blogs.map(b => <Blog key={b.id} blog={b} setMessage={setMessage}/>)}
+          <BlogsDisplay blogs={blogs} setBlogs={setBlogs} setMessage={setMessage} />
+
+          
         </div>
       }
       
