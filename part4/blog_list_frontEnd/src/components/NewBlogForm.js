@@ -2,50 +2,49 @@ import React from 'react'
 import { useState } from 'react'
 import blogServices from '../services/blogs'
 
-const handleCreate = async (e, newBlog, setters, blogs, setBlogs, setMessage) => {
-    e.preventDefault()
-    
-    try{
-        const blogsUpdated = [...blogs]
-        
-        newBlog.author = newBlog.author || 'anonymous'
 
-        blogsUpdated.push(await blogServices.newBlog(newBlog))
-        
-        setBlogs(blogsUpdated)
-        
-        setMessage({
-            err: 'message',
-            mes: `Added ${newBlog.title} by ${newBlog.author}.`
-        })
-        
-        setters.setTitle('')
-        setters.setAuthor('')
-        setters.setUrl('')
-    }catch(err){
-        setMessage({
-            err: 'error',
-            mes: err.response.data.error
-        })
-    }    
-}
 
-const NewBlogForm = ({blogs, setBlogs, setMessage}) => {
+const NewBlogForm = ({blogs, setBlogs, setMessage, toggleVisibility}) => {
 
+    //State
     const [title, setTitle] = useState('')
     const [author, setAuthor] = useState('')
     const [url, setUrl] = useState('')
 
-    const newBlog = {
-        title,
-        author,
-        url
-    }
+    //Methods
+    const handleCreate = async (e) => {
+        e.preventDefault()
 
-    const setters = {
-        setTitle,
-        setAuthor,
-        setUrl
+        try{
+            const newBlog = {
+                title,
+                author,
+                url
+            }
+
+            const blogsUpdated = [...blogs]
+            
+            newBlog.author = newBlog.author || 'anonymous'
+    
+            blogsUpdated.push(await blogServices.newBlog(newBlog))
+            
+            setBlogs(blogsUpdated)
+            
+            setMessage({
+                err: 'message',
+                mes: `Added ${newBlog.title} by ${newBlog.author}.`
+            })
+            
+            setTitle('')
+            setAuthor('')
+            setUrl('')
+            toggleVisibility()
+        }catch(err){
+            setMessage({
+                err: 'error',
+                mes: err.response.data.error
+            })
+        }    
     }
 
     return(
@@ -61,7 +60,7 @@ const NewBlogForm = ({blogs, setBlogs, setMessage}) => {
                 <div>
                     Url: <input type='text' value={url} onChange={e => setUrl(e.target.value)}/>
                 </div>
-                <input type='submit' value='Create' onClick={e => handleCreate(e, newBlog, setters, blogs, setBlogs, setMessage)}/>
+                <input type='submit' value='Create' onClick={e => handleCreate(e)}/>
             </form>
         </div>
     )

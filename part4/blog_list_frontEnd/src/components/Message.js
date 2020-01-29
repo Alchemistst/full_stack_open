@@ -3,7 +3,7 @@ import React from 'react'
 
 //Message component render both notification (if called with err = "message") and error messages (if called with err = "error")
 const Message = ({message, setMessage}) =>{
-    
+
     let style = {}
 
     if (message.mes === null) {
@@ -33,7 +33,11 @@ const Message = ({message, setMessage}) =>{
         }
     }
 
-    setTimeout(() => setMessage(''), 5000)
+    let timer = window.setTimeout(() => {
+        setMessage('')
+    }, 5000)
+
+    window.clearTimeout(timer - 1)
     
     return (
         <div>

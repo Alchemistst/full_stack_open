@@ -6,6 +6,8 @@ import LogInForm from './components/LogInForm'
 import Blog from './components/Blog'
 import NewBlogForm from './components/NewBlogForm'
 import Message from './components/Message'
+import Togglable from './components/Togglable'
+
 
 const logOut = (e, setUser) => {
   e.preventDefault()
@@ -53,14 +55,16 @@ function App() {
           <h1>{user.name}'s BLOGS</h1>
           
           <button onClick={(e) => logOut(e, setUser)}>Log out</button>
-         
-          <NewBlogForm 
-            blogs={blogs} 
-            setBlogs={setBlogs}
-            setMessage={setMessage}
-          />
+          
+          <Togglable buttonLabel='New blog'>
+            <NewBlogForm 
+              blogs={blogs} 
+              setBlogs={setBlogs}
+              setMessage={setMessage}
+            />
+          </Togglable>
 
-          {blogs.map(b => <Blog key={b.id} blog={b} />)}
+          {blogs.map(b => <Blog key={b.id} blog={b} setMessage={setMessage}/>)}
         </div>
       }
       

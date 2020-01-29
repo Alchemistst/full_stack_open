@@ -21,10 +21,19 @@ const logIn = async (credentials) => {
 }
 
 const newBlog = async (data) => {
+    console.log(token)
     const result = await axios
         .post(baseUrl+'blogs/', data ,{headers: {Authorization: token}})
 
     return result.data
 }
 
-export default { getAll, logIn, newBlog, getToken }
+const addLikes = async (blog) => {
+    let updatedBlog = {...blog}
+    updatedBlog.user = blog.user.id
+    updatedBlog.likes ++
+    await axios
+    .put(baseUrl+'blogs/'+blog.id, updatedBlog, {headers: {Authorization: token}})
+}
+
+export default { getAll, logIn, newBlog, getToken, addLikes }
