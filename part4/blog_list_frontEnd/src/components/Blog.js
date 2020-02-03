@@ -22,7 +22,10 @@ const Blog = ({
         marginRight: '5px',
       }}
       >
-        {blog.title}
+        {blog.title.toUpperCase()} 
+      </span>
+      <span>
+        {`by ${blog.author} `}
       </span>
       <span
         tabIndex="0"
@@ -30,25 +33,25 @@ const Blog = ({
         style={{ cursor: 'pointer' }}
         onClick={() => toggleVisibility()}
         onKeyDown={() => toggleVisibility()}
+        className="showHide"
       >
         {showNHide}
       </span>
       {displayInfo
             && (
-            <div>
+            <div className='info'>
               <div>{blog.url}</div>
               <div>
 likes:
                 {blog.likes}
                 {' '}
-                <button type="button" onClick={() => handleLike(blog)}>Like</button>
+                <button className="like" type="button" onClick={() => handleLike(blog)}>Like</button>
               </div>
               <div>
-Added by
-                {blog.user.name}
+                {`Added by ${blog.user.name}`}
               </div>
               {permission
-                    && <button type="button" onClick={() => handleDelete(blog)}>Delete</button>}
+                    && <button className='delete' type="button" onClick={() => handleDelete(blog)}>Delete</button>}
             </div>
             )}
       <hr />
