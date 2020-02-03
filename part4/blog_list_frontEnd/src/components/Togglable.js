@@ -1,30 +1,35 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 
-const Togglable = (props) => {
-    
-    //STATE
-    const [visible, setVisible] = useState(false)
+const Togglable = ({ children, buttonLabel }) => {
+  // STATE
+  const [visible, setVisible] = useState(false);
 
-    //STYLE
-    const visibility = {
-        display: visible ? '' : 'none'
-    }
-    
-    //VARS AND CONSTS
-    const buttonLabel = visible ? 'Cancel' : props.buttonLabel
+  // STYLE
+  const visibility = {
+    display: visible ? '' : 'none',
+  };
 
-    const toggleVisibility = () => {
-        setVisible(!visible)
-    }
+  // VARS AND CONSTS
+  const bLabel = visible ? 'Cancel' : buttonLabel;
 
-    return(
-        <div>
-            <div style={visibility} >
-                {React.cloneElement(props.children, {toggleVisibility:toggleVisibility})}
-            </div>
-            <button onClick={()=>toggleVisibility()}>{buttonLabel}</button>
-        </div>
-    )
-}
+  const toggleVisibility = () => {
+    setVisible(!visible);
+  };
 
-export default Togglable
+  return (
+    <div>
+      <div style={visibility}>
+        {React.cloneElement(children, { toggleVisibility })}
+      </div>
+      <button type="button" onClick={() => toggleVisibility()}>{bLabel}</button>
+    </div>
+  );
+};
+
+Togglable.propTypes = {
+  buttonLabel: PropTypes.string.isRequired,
+};
+
+
+export default Togglable;

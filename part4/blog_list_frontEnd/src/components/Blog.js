@@ -1,38 +1,59 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 
-const Blog = ({blog, handleLike, permission, handleDelete}) => {
-    //State
-    const [displayInfo, setDisplayInfo] = useState(false)
+const Blog = ({
+  blog, handleLike, permission, handleDelete,
+}) => {
+  // State
+  const [displayInfo, setDisplayInfo] = useState(false);
 
-    //vars and consts
-    const showNHide = displayInfo ? '(hide)' : '(show)'
+  // vars and consts
+  const showNHide = displayInfo ? '(hide)' : '(show)';
 
-    //Methods
-    const toggleVisibility = () => {
-        setDisplayInfo(!displayInfo)
-    }
+  // Methods
+  const toggleVisibility = () => {
+    setDisplayInfo(!displayInfo);
+  };
 
-    return(
-        <div>
-            <span style={{
-                fontSize: '20px',
-                fontWeight: 'bold',
-                marginRight: '5px'
-            }}>{blog.title}</span>
-            <span style={{cursor:'pointer'}} onClick={()=> toggleVisibility()}>{showNHide}</span>
-            {displayInfo && 
+  return (
+    <div>
+      <span style={{
+        fontSize: '20px',
+        fontWeight: 'bold',
+        marginRight: '5px',
+      }}
+      >
+        {blog.title}
+      </span>
+      <span
+        tabIndex="0"
+        role="button"
+        style={{ cursor: 'pointer' }}
+        onClick={() => toggleVisibility()}
+        onKeyDown={() => toggleVisibility()}
+      >
+        {showNHide}
+      </span>
+      {displayInfo
+            && (
             <div>
-                <div>{blog.url}</div>
-                <div>likes: {blog.likes} <button onClick={()=>handleLike(blog)}>Like</button></div>
-                <div>Added by {blog.user.name}</div>
-                {permission && 
-                    <button onClick={() => handleDelete(blog)}>Delete</button>
-                }
+              <div>{blog.url}</div>
+              <div>
+likes:
+                {blog.likes}
+                {' '}
+                <button type="button" onClick={() => handleLike(blog)}>Like</button>
+              </div>
+              <div>
+Added by
+                {blog.user.name}
+              </div>
+              {permission
+                    && <button type="button" onClick={() => handleDelete(blog)}>Delete</button>}
             </div>
-            }
-            <hr/>
-        </div>
-    )
-}
+            )}
+      <hr />
+    </div>
+  );
+};
 
-export default Blog
+export default Blog;

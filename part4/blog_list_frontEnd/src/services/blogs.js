@@ -1,50 +1,51 @@
 import axios from 'axios';
 
-const baseUrl = 'http://localhost:3003/api/'
+const baseUrl = 'http://localhost:3003/api/';
 
-let token = null
+let token = null;
 
 const getToken = (newToken) => {
-    token = `bearer ${newToken}`
-}
+  token = `bearer ${newToken}`;
+};
 
 const getAll = async () => {
-    const result = await axios.get(baseUrl+'blogs/')
-    return result.data
-}
+  const result = await axios.get(`${baseUrl}blogs/`);
+  return result.data;
+};
 
 const logIn = async (credentials) => {
-    const result = await axios
-        .post(baseUrl+'login/', credentials)
-    
-    getToken(result.data.token)
+  const result = await axios
+    .post(`${baseUrl}login/`, credentials);
 
-    return result.data
-}
+  getToken(result.data.token);
+
+  return result.data;
+};
 
 const logOut = () => {
-    token = null
-}
+  token = null;
+};
 
 const newBlog = async (data) => {
-    console.log(token)
-    const result = await axios
-        .post(baseUrl+'blogs/', data ,{headers: {Authorization: token}})
+  const result = await axios
+    .post(`${baseUrl}blogs/`, data, { headers: { Authorization: token } });
 
-    return result.data
-}
+  return result.data;
+};
 
 const addLikes = async (blog) => {
-    let updatedBlog = {...blog}
-    updatedBlog.user = blog.user.id
-    updatedBlog.likes ++
-    await axios
-    .put(baseUrl+'blogs/'+blog.id, updatedBlog, {headers: {Authorization: token}})
-}
+  const updatedBlog = { ...blog };
+  updatedBlog.user = blog.user.id;
+  updatedBlog.likes += 1;
+  await axios
+    .put(`${baseUrl}blogs/${blog.id}`, updatedBlog, { headers: { Authorization: token } });
+};
 
 const deleteBlog = async (blog) => {
-    await axios
-    .delete(baseUrl+'blogs/'+blog.id, {headers: {Authorization: token}})
-}
+  await axios
+    .delete(`${baseUrl}blogs/${blog.id}`, { headers: { Authorization: token } });
+};
 
-export default { getAll, logIn, newBlog, getToken, addLikes, logOut, deleteBlog }
+export default {
+  getAll, logIn, newBlog, getToken, addLikes, logOut, deleteBlog,
+};
