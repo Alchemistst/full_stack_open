@@ -9,10 +9,10 @@ import Message from './components/Message'
 import Togglable from './components/Togglable'
 
 
-const logOut = (e, setUser) => {
-  e.preventDefault()
+const handleLogOut = (setUser) => {
   window.localStorage.removeItem('blogListUser')
   setUser(null)
+  blogServices.logOut()
 }
 
 function App() {
@@ -66,7 +66,7 @@ function App() {
         <div>
           <h1>{user.name}'s BLOGS</h1>
           
-          <button onClick={(e) => logOut(e, setUser)}>Log out</button>
+          <button onClick={() => handleLogOut(setUser)}>Log out</button>
           
           <Togglable buttonLabel='New blog'>
             <NewBlogForm 
@@ -76,7 +76,7 @@ function App() {
             />
           </Togglable>
 
-          <BlogsDisplay blogs={blogs} setBlogs={setBlogs} setMessage={setMessage} />
+          <BlogsDisplay blogs={blogs} setBlogs={setBlogs} setMessage={setMessage} user={user.username} />
 
           
         </div>

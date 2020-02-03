@@ -17,7 +17,13 @@ const logIn = async (credentials) => {
     const result = await axios
         .post(baseUrl+'login/', credentials)
     
+    getToken(result.data.token)
+
     return result.data
+}
+
+const logOut = () => {
+    token = null
 }
 
 const newBlog = async (data) => {
@@ -36,4 +42,9 @@ const addLikes = async (blog) => {
     .put(baseUrl+'blogs/'+blog.id, updatedBlog, {headers: {Authorization: token}})
 }
 
-export default { getAll, logIn, newBlog, getToken, addLikes }
+const deleteBlog = async (blog) => {
+    await axios
+    .delete(baseUrl+'blogs/'+blog.id, {headers: {Authorization: token}})
+}
+
+export default { getAll, logIn, newBlog, getToken, addLikes, logOut, deleteBlog }

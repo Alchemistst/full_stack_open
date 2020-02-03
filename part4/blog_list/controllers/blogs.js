@@ -62,7 +62,15 @@ blogsRouter.post('/', async (req, res, next) => {
 
 
   try {
-    const result = await blog.save();
+    let result = await blog.save();
+
+    Blog.populate(result, {
+      path: 'user',
+      select: {passhash: 0, blogs: 0}
+    }, (err, res) => {
+      if (err) throw err
+      result = res
+    }  );
 
     const updatedUser = await User.findById(userInSession);
     updatedUser.blogs.push(result.toJSON().id);

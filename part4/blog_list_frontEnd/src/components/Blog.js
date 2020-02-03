@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const Blog = ({blog, handleLike}) => {
+const Blog = ({blog, handleLike, permission, handleDelete}) => {
     //State
     const [displayInfo, setDisplayInfo] = useState(false)
 
@@ -25,6 +25,9 @@ const Blog = ({blog, handleLike}) => {
                 <div>{blog.url}</div>
                 <div>likes: {blog.likes} <button onClick={()=>handleLike(blog)}>Like</button></div>
                 <div>Added by {blog.user.name}</div>
+                {permission && 
+                    <button onClick={() => handleDelete(blog)}>Delete</button>
+                }
             </div>
             }
             <hr/>
