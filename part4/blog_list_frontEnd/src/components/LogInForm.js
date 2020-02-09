@@ -1,37 +1,38 @@
 import React from 'react';
 import blogServices from '../services/blogs';
+import { useField } from '../hooks/hooksindex'
 
-const handleLogIn = async (e, props) => {
+const handleLogIn = (e, username, password, setUser, setMessage) => {
   e.preventDefault();
 
-  if (props.username === '' || props.password === '') {
-    props.setMessage({
+  if (username.value === '' || password.value === '') {
+    setMessage({
       err: 'error',
       mes: 'Username and password are required.',
     });
     return;
   }
 
-  try {
-    const user = await blogServices.logIn({ username: props.username, pass: props.password });
-    props.setUser(user);
+  blogServices.logIn({ username: username.value, pass: password.value })
+    .then(user => {
+      setUser(user);
+      window.localStorage.setItem('blogListUser', JSON.stringify(user));
+    })
+    .catch( err => {
+      setMessage({
+        err: 'error',
+        mes: err.response.data.error,
+      })
+    })
 
-    window.localStorage.setItem('blogListUser', JSON.stringify(user));
-
-    props.setUsername('');
-    props.setPassword('');
-  } catch (err) {
-    props.setMessage({
-      err: 'error',
-      mes: err.response.data.error,
-    });
-  }
+  username.onChange();
+  password.onChange();
 };
 
-const LogInForm = (props) => {
-  const {
-    username, setUsername, password, setPassword,
-  } = props;
+const LogInForm = ({setUser, setMessage}) => {
+
+  const username = useField('text')
+  const password = useField('password')
 
   return (
     <div className="LogInForm">
@@ -40,14 +41,17 @@ const LogInForm = (props) => {
         <div>
               Username:
 
-          <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+          <input {...username} />
         </div>
         <div>
               Password:
 
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <input {...password} />
         </div>
-        <input type="submit" value="Log in" onClick={(e) => handleLogIn(e, props)} />
+        <input 
+          type="submit" 
+          value="Log in" 
+          onClick={(e) => handleLogIn(e, username, password, setUser, setMessage)} />
       </form>
     </div>
   );

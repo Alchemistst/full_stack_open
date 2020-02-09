@@ -18,8 +18,6 @@ const handleLogOut = (setUser) => {
 function App() {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
   const [message, setMessage] = useState({ err: '', mes: null });
 
   useEffect(() => {
@@ -55,10 +53,6 @@ function App() {
       {user === null
         && (
         <LogInForm
-          username={username}
-          password={password}
-          setUsername={setUsername}
-          setPassword={setPassword}
           setUser={setUser}
           setMessage={setMessage}
         />
