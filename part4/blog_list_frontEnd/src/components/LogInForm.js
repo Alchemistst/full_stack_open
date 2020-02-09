@@ -34,7 +34,7 @@ const LogInForm = (props) => {
   } = props;
 
   return (
-    <div>
+    <div className="LogInForm">
       <h1>Log in to application</h1>
       <form>
         <div>

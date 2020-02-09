@@ -39,7 +39,7 @@ const BlogsDisplay = ({
   };
 
   return (
-    <div>
+    <div className="BlogDisplay">
       {blogs.map((b) => (
         <Blog
           key={b.id}
