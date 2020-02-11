@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback} from 'react'
 import axios from 'axios'
 
 
@@ -19,11 +19,24 @@ const useField = (type) => {
 const useResource = (baseUrl) => {
   const [resources, setResources] = useState([])
 
-  // ...
+  const fetchAll = useCallback(() =>{
+    axios
+    .get(`${baseUrl}/`)
+    .then(res => {
+      console.log(res.data)
+      setResources(res.data)})
+  }, [baseUrl])
 
   const create = (resource) => {
-    
+    axios
+      .post(`${baseUrl}/`, resource)
+      .then(res => fetchAll())
   }
+
+
+  useEffect(() => {
+    fetchAll()
+  },[fetchAll])
 
   const service = {
     create
@@ -39,12 +52,14 @@ const App = () => {
   const name = useField('text')
   const number = useField('text')
 
-  const [notes, noteService] = useResource('http://localhost:3005/notes')
-  const [persons, personService] = useResource('http://localhost:3005/persons')
+
+  const [notes, noteService] = useResource('http://localhost:3005/api/notes')
+  const [persons, personService] = useResource('http://localhost:3005/api/phonebook')
+
 
   const handleNoteSubmit = (event) => {
     event.preventDefault()
-    noteService.create({ content: content.value })
+    noteService.create({ note: content.value })
   }
  
   const handlePersonSubmit = (event) => {
@@ -59,7 +74,7 @@ const App = () => {
         <input {...content} />
         <button>create</button>
       </form>
-      {notes.map(n => <p key={n.id}>{n.content}</p>)}
+      {notes.map(n => <p key={n.id}>{n.note}</p>)}
 
       <h2>persons</h2>
       <form onSubmit={handlePersonSubmit}>
