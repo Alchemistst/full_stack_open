@@ -33,7 +33,6 @@ const useResource = (baseUrl) => {
       .then(res => fetchAll())
   }
 
-
   useEffect(() => {
     fetchAll()
   },[fetchAll])
