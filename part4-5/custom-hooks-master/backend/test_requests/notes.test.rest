@@ -1,0 +1,24 @@
+GET http://localhost:3005/api/notes/
+
+###
+
+POST  http://localhost:3005/api/notes/
+Content-Type: application/json
+
+{
+    "note" : "This is a test note. (III)"
+}
+
+###
+
+GET http://localhost:3005/api/phonebook/
+
+###
+
+POST  http://localhost:3005/api/phonebook/
+Content-Type: application/json
+
+{
+    "name" : "test 2",
+    "number" : "4321-9876"
+}

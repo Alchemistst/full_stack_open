@@ -1,0 +1,31 @@
+post http://localhost:3003/api/login/
+Content-Type: application/json
+
+    {
+        "username": "testPasser45",
+        "pass": "testPasser45"
+    }
+
+###
+post http://localhost:3003/api/users/
+Content-Type: application/json
+
+    {
+        "name": "Tester McTestingtay",
+        "username": "testPasser45",
+        "pass": "testPasser45"
+    }
+###
+post http://localhost:3003/api/blogs/
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RQYXNzZXI0NSIsImlkIjoiNWUyOTcyMjJiYWQ5NWMyMjc0MmY5MWZkIiwiaWF0IjoxNTgwMTIyNjgyfQ.pt_w7YnbFQI1w55C4zTnGMYn-GTnHjGWslHQvckS4w4
+    
+    {
+        "title": "Angus 2nd blog",
+        "author": "Angus Angstius",
+        "url": "www.angusangustius.com"
+    }
+###
+delete http://localhost:3003/api/blogs/5e2836fcb89a851968b8925c
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Indpc2hrZXJsaWNrZXI2OSIsImlkIjoiNWUyODI5NGQ1M2YxN2YyZjIwYTVmMzI1IiwiaWF0IjoxNTc5NzcyMjUyfQ.g8L_Mxg68-JzYrNzY6NHkK8IRobrUoe-MZ71sdcIP_c
