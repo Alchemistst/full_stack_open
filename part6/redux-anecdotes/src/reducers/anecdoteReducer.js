@@ -23,19 +23,37 @@ const reducer = (state = initialState, action) => {
   console.log('state now: ', state)
   console.log('action', action)
 
-  if (action.type === 'VOTE'){
-    let newState = [...state]
-    const index  = newState.findIndex(a => a.id === action.data.id)
-    newState[index].votes += 1
-    return newState    
+  switch (action.type){
+    case 'VOTE':
+      let newState = [...state]
+      const index  = newState.findIndex(a => a.id === action.data.id)
+      newState[index].votes += 1
+      return newState  
+
+    case 'ADD':
+      const newAnecdote = {
+        content: action.data.newAnecdote,
+        id: getId(),
+        votes: 0
+      }
+      return state.concat(newAnecdote)
+
+    default:
+      return state
   }
-  return state
 }
 
 export const voteAnecdote = (id) =>{
   return {
     type: 'VOTE',
     data: {id}
+  }
+}
+
+export const addAnecdote = (newAnecdote) =>{
+  return {
+    type: 'ADD',
+    data: {newAnecdote}
   }
 }
 
