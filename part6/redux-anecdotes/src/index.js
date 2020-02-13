@@ -1,8 +1,18 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { createStore } from 'redux'
+import { createStore, combineReducers } from 'redux'
 import App from './App'
-import reducer from './reducers/anecdoteReducer'
+
+//Reducers
+import anecdoteReducer from './reducers/anecdoteReducer'
+import messageReducer from './reducers/messageReducer'
+import filterReducer from './reducers/filterReducer'
+
+const reducer = combineReducers({
+  anecdotes: anecdoteReducer,
+  message: messageReducer,
+  filter: filterReducer
+})
 
 const store = createStore(reducer)
 
@@ -15,3 +25,4 @@ const render = () => {
 
 render()
 store.subscribe(render)
+console.log('Store: ',store.getState())

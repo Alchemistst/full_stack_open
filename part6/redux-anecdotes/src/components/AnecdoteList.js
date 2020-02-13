@@ -2,13 +2,15 @@ import React from 'react'
 
 //Reducers
 import {voteAnecdote} from '../reducers/anecdoteReducer'
+import {newMessage} from '../reducers/messageReducer'
 
 const AnecdoteList = ({store}) =>{
-    const anecdotes = store.getState()
+    const anecdotes = store.getState().anecdotes
 
-    const vote = (id) => {
+    const vote = (id, content) => {
         console.log('vote', id)
         store.dispatch(voteAnecdote(id))
+        store.dispatch(newMessage(`You voted "${content}"`))
     }
 
     return(
@@ -25,7 +27,7 @@ const AnecdoteList = ({store}) =>{
             </div>
             <div>
                 has {anecdote.votes}
-                <button onClick={() => vote(anecdote.id)}>vote</button>
+                <button onClick={() => vote(anecdote.id, anecdote.content)}>vote</button>
             </div>
             </div>
         )}
