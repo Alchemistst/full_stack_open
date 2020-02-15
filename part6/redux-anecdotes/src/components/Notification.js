@@ -1,9 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-//Reducers
-import {endMessage} from '../reducers/messageReducer'
-
 const Notification = (props) => {
   let style = {
     border: 'solid',
@@ -16,19 +13,10 @@ const Notification = (props) => {
 
   const message = props.message
 
-  const displayAndDisappear = () =>{
-    if (message !== ''){
-      const timeoutID = setTimeout(() => {
-        props.endMessage()}, 5000)
-      clearTimeout(timeoutID-1)
-    }
-  }
-
   return (
     <div>
       {message !== '' && <div style={style}>
         {message}
-        {displayAndDisappear()}
       </div>}
     </div>
   )
@@ -38,4 +26,4 @@ const mapStateToProps = ({message}) => {
   return {message}
 }
 
-export default connect (mapStateToProps, {endMessage}) (Notification)
+export default connect (mapStateToProps) (Notification)

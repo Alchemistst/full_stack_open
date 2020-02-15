@@ -17,9 +17,21 @@ export const newMessage = (message) =>{
     }
 }
 
-export const endMessage = () => {
+export const endMessage = () =>{
     return {
         type: 'END_MESSAGE'
+    }
+}
+
+export const setNotification = (message, count) =>{
+    return dispatch => {
+        dispatch(newMessage(message))
+
+        const timeOutID = setTimeout(()=>{
+            dispatch(endMessage())
+        }, count*1000)
+
+        clearTimeout(timeOutID-1)
     }
 }
 

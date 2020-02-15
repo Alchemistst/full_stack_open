@@ -3,15 +3,14 @@ import { connect } from 'react-redux'
 
 //Reducers
 import {voteAnecdote} from '../reducers/anecdoteReducer'
-import {newMessage} from '../reducers/messageReducer'
+import {setNotification} from '../reducers/messageReducer'
 
 
 const AnecdoteList = (props) =>{
 
-    const vote = (id, content) => {
-        console.log('vote', id)
-        props.voteAnecdote(id)
-        props.newMessage(`You voted "${content}"`)
+    const vote = (votedAnecdote) => {
+        props.voteAnecdote(votedAnecdote)
+        props.setNotification(`You voted "${votedAnecdote.content}"`, 10)
     }
 
     return(
@@ -28,7 +27,7 @@ const AnecdoteList = (props) =>{
             </div>
             <div>
                 has {anecdote.votes}
-                <button onClick={() => vote(anecdote.id, anecdote.content)}>vote</button>
+                <button onClick={() => vote(anecdote)}>vote</button>
             </div>
             </div>
         )}
@@ -47,4 +46,4 @@ const connectedAnecdoteList = ({anecdotes, filter}) =>{
     }
 }
 
-export default connect (connectedAnecdoteList, { voteAnecdote, newMessage }) (AnecdoteList)
+export default connect (connectedAnecdoteList, { voteAnecdote, setNotification }) (AnecdoteList)

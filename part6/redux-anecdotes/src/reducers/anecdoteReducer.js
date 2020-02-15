@@ -9,10 +9,10 @@ const reducer = (state = [], action) => {
       return action.data.anecdotes
 
     case 'VOTE':
+      const index  = state.findIndex(a => a.id === action.data.updatedAnecdote.id)
       let newState = [...state]
-      const index  = newState.findIndex(a => a.id === action.data.id)
-      newState[index].votes += 1
-      return newState  
+      newState.splice(index,1,action.data.updatedAnecdote)
+      return newState 
 
     case 'ADD':
       const newAnecdote = action.data.newAnecdote
@@ -33,10 +33,13 @@ export const anecdotesInit = () => {
   }
 }
 
-export const voteAnecdote = (id) =>{
-  return {
-    type: 'VOTE',
-    data: {id}
+export const voteAnecdote = (votedAnecdote) =>{
+  return async dispatch => {
+    const updatedAnecdote = await anecdoteServices.voteAnecdote(votedAnecdote)
+    dispatch(
+      {type: 'VOTE',
+      data: {updatedAnecdote}
+    })
   }
 }
 
